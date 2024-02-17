@@ -6,19 +6,30 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.XboxController;
 // import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+// import edu.wpi.first.wpilibj2.command.InstantCommand;
+// import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ClimbExtend;
+import frc.robot.commands.ClimbRetract;
+import frc.robot.commands.SpinFeedWheel;
+import frc.robot.commands.SpinFlywheel;
+import frc.robot.commands.SpinIntake;
+import frc.robot.commands.SpinShooter;
 //import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 //import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 //import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 
@@ -32,12 +43,33 @@ import java.io.File;
  */
 public class RobotContainer {
 
-    // The robot's subsystems and commands are defined here...
+    public static final XboxController driverController = new XboxController(OperatorConstants.ControllerPort);
+
+    public static final JoystickButton spinFlywheelButton = new JoystickButton(driverController, Constants.Buttons.FLYWHEEL_BUTTON_ID);
+    public static final JoystickButton spinFeedWheelButton = new JoystickButton(driverController, Constants.Buttons.FEEDWHEEL_BUTTON_ID);
+    public static final JoystickButton spinIntakeButton = new JoystickButton(driverController, Constants.Buttons.INTAKE_BUTTON_ID);
+    public static final JoystickButton spinShooterButton = new JoystickButton(driverController, Constants.Buttons.SHOOTER_BUTTON_ID);
+    public static final JoystickButton extendElevatorButton = new JoystickButton(driverController, Constants.Buttons.ELEVATOR_EXTEND_BUTTON_ID);
+    public static final JoystickButton retractElevatorButton = new JoystickButton(driverController, Constants.Buttons.ELEVATOR_RETRACT_BUTTON_ID);
+    
+        // The robot's subsystems and commands are defined here...
     private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
             "swerve"));
+    public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    public static ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
+    public static SpinFlywheel spinFlywheel = new SpinFlywheel(shooterSubsystem);
+    public static SpinFeedWheel spinFeedWheel = new SpinFeedWheel(shooterSubsystem);
+    public static SpinIntake spinIntake = new SpinIntake(intakeSubsystem);
+    public static SpinShooter spinShooter = new SpinShooter(shooterSubsystem);
+    public static ClimbExtend climbExtend = new ClimbExtend(elevatorSubsystem);
+    public static ClimbRetract climbRetract = new ClimbRetract(elevatorSubsystem);
             
-//     XboxController driverXbox = new XboxController(OperatorConstants.ControllerPort);
-    CommandJoystick driverController = new CommandJoystick(OperatorConstants.ControllerPort);
+
+
+
+    
 
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -110,9 +142,15 @@ public class RobotContainer {
      * Flight joysticks}.
      */
     private void configureBindings() {
+        spinFlywheelButton.whileTrue(spinFlywheel);
+        spinFeedWheelButton.whileTrue(spinFeedWheel);
+        spinIntakeButton.whileTrue(spinIntake);
+        spinShooterButton.whileTrue(spinShooter);
+        extendElevatorButton.whileTrue(climbExtend);
+        retractElevatorButton.whileTrue(climbRetract);
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-        driverController.button(2).onTrue(new InstantCommand(drivebase::zeroGyro));
+        //driverController.button(2).onTrue(new InstantCommand(drivebase::zeroGyro));
 
         // new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
         // new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
