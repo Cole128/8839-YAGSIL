@@ -5,17 +5,34 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private CANSparkMax extendMotorLeft = new CANSparkMax(Constants.MotorConstants.MOTOR_ELEVATOR_LEFT_ID, MotorType.kBrushless);
-  private CANSparkMax extendMotorRight = new CANSparkMax(Constants.MotorConstants.MOTOR_ELEVATOR_RIGHT_ID, MotorType.kBrushless);
+  private final CANSparkMax leftEl;
+  private final CANSparkMax rightEl;
 
   /** Creates a new ElevatorSubsystem. */
-  public ElevatorSubsystem() {
+  public ElevatorSubsystem(int leftID, int rightID) {
+    leftEl = new CANSparkMax(leftID, MotorType.kBrushless);
+    rightEl = new CANSparkMax(rightID, MotorType.kBrushless);
+
+    leftEl.restoreFactoryDefaults();
+    rightEl.restoreFactoryDefaults();
+
+    leftEl.setSmartCurrentLimit(30);
+    rightEl.setSmartCurrentLimit(30);
+
+    leftEl.setIdleMode(IdleMode.kBrake);
+    rightEl.setIdleMode(IdleMode.kBrake);
+
+    leftEl.setInverted(true);
+    rightEl.setInverted(false);
+
+    leftEl.burnFlash();
+    rightEl.burnFlash();
   }
 
   @Override
@@ -24,7 +41,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void climbExtend(double speed) {
-    extendMotorLeft.set(speed);
-    extendMotorRight.set(speed);
+    leftEl.set(speed);
+    rightEl.set(speed);
   }
 }

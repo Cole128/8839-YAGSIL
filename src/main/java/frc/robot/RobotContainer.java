@@ -7,15 +7,13 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
-// import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.InstantCommand;
-// import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbExtend;
 import frc.robot.commands.ClimbRetract;
@@ -23,15 +21,16 @@ import frc.robot.commands.SpinFeedWheel;
 import frc.robot.commands.SpinFlywheel;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SpinShooter;
-//import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
-//import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
-//import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.commands.getIntakePos;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeJoint;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,8 +44,8 @@ public class RobotContainer {
 
     public static final XboxController driverController = new XboxController(OperatorConstants.ControllerPort);
 
-    public static final JoystickButton spinFlywheelButton = new JoystickButton(driverController, Constants.Buttons.FLYWHEEL_BUTTON_ID);
-    public static final JoystickButton spinFeedWheelButton = new JoystickButton(driverController, Constants.Buttons.FEEDWHEEL_BUTTON_ID);
+    public static final JoystickButton retractIntakeJoint = new JoystickButton(driverController, Constants.Buttons.RETRACT_INTAKE_JOINT_BUTTON_ID);
+    public static final JoystickButton extendIntakeJoint = new JoystickButton(driverController, Constants.Buttons.EXTEND_INTAKE_JOINT_BUTTON_ID);
     public static final JoystickButton spinIntakeButton = new JoystickButton(driverController, Constants.Buttons.INTAKE_BUTTON_ID);
     public static final JoystickButton spinShooterButton = new JoystickButton(driverController, Constants.Buttons.SHOOTER_BUTTON_ID);
     public static final JoystickButton extendElevatorButton = new JoystickButton(driverController, Constants.Buttons.ELEVATOR_EXTEND_BUTTON_ID);
@@ -55,16 +54,24 @@ public class RobotContainer {
         // The robot's subsystems and commands are defined here...
     private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
             "swerve"));
-    public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    public static ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+    public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem(MotorConstants.MOTOR_FLYWHEEL_LEFT_ID, MotorConstants.MOTOR_FLYWHEEL_RIGHT_ID, MotorConstants.MOTOR_FEEDER_ID);
+    public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem(MotorConstants.MOTOR_INTAKE_ID);
+    public static ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(MotorConstants.MOTOR_ELEVATOR_LEFT_ID, MotorConstants.MOTOR_ELEVATOR_RIGHT_ID);
+    public static IntakeJoint intakeJoint = new IntakeJoint(MotorConstants.MOTOR_INTAKE_ANGLE_ID);
 
+    //Shooter
+    public static SpinShooter spinShooter = new SpinShooter(shooterSubsystem);
     public static SpinFlywheel spinFlywheel = new SpinFlywheel(shooterSubsystem);
     public static SpinFeedWheel spinFeedWheel = new SpinFeedWheel(shooterSubsystem);
+    
+    //Intake
     public static SpinIntake spinIntake = new SpinIntake(intakeSubsystem);
-    public static SpinShooter spinShooter = new SpinShooter(shooterSubsystem);
+    public static getIntakePos getIntakePos = new getIntakePos(intakeJoint);
+    
+    //Climb
     public static ClimbExtend climbExtend = new ClimbExtend(elevatorSubsystem);
     public static ClimbRetract climbRetract = new ClimbRetract(elevatorSubsystem);
+    
             
 
 
@@ -77,6 +84,9 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+        NamedCommands.registerCommand("climbRetract", new ClimbRetract(elevatorSubsystem));
+
         // Configure the trigger bindings
         configureBindings();
 
@@ -123,6 +133,8 @@ public class RobotContainer {
 
         SmartDashboard.putData(m_chooser);
 
+                
+
         // drivebase.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive :
         // closedFieldAbsoluteDrive);
         drivebase.setDefaultCommand(m_chooser.getSelected());
@@ -142,8 +154,7 @@ public class RobotContainer {
      * Flight joysticks}.
      */
     private void configureBindings() {
-        spinFlywheelButton.whileTrue(spinFlywheel);
-        spinFeedWheelButton.whileTrue(spinFeedWheel);
+        
         spinIntakeButton.whileTrue(spinIntake);
         spinShooterButton.whileTrue(spinShooter);
         extendElevatorButton.whileTrue(climbExtend);
@@ -165,7 +176,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
         // return drivebase.getAutonomousCommand("New Path", true);
-        return m_chooser.getSelected();
+        return null;
     }
 
     public void setDriveMode() {

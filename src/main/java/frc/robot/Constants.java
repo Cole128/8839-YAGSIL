@@ -63,18 +63,33 @@ public final class Constants {
   }
 
   public static class Buttons {
-    public static final int FLYWHEEL_BUTTON_ID = 1;
-    public static final int FEEDWHEEL_BUTTON_ID = 2;
+    public static final int RETRACT_INTAKE_JOINT_BUTTON_ID = 1;
+    public static final int EXTEND_INTAKE_JOINT_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 3;
     public static final int SHOOTER_BUTTON_ID = 4;
     public static final int ELEVATOR_EXTEND_BUTTON_ID = 5;
     public static final int ELEVATOR_RETRACT_BUTTON_ID = 6;
+
   }
 
-  public static class IntakePID {
+  public static class Intake {
     public static final double kOutP = 0.06;
     public static final double kInP = 0.06;
     public static final double ki = 0.0;
     public static final double kd = 0.0;
+    public static final int INTAKE_CURRENT_LIMIT = 25;
+  }
+
+  public static class JointConstants {
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kIz = 0.0;
+    public static final double kMaxOutput = 0.7;
+    public static final double kMinOutput = -0.7;
+
+    public static final double kUpperLimit = 0.3;
+    public static final double kLowerLimit = 0.01;
+
   }
 }
