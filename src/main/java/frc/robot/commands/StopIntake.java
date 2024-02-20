@@ -7,24 +7,24 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeJoint;
 
-public class getIntakePos extends Command {
-  private final IntakeJoint intakeJoint;
-  /** Creates a new getIntakePos. */
-  public getIntakePos(IntakeJoint joint) {
-    intakeJoint = joint;
+public class StopIntake extends Command {
+  private IntakeJoint joint;
+  /** Creates a new StopIntake. */
+  public StopIntake(IntakeJoint subsystem) {
+    joint = subsystem;
     addRequirements(joint);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    joint.setSpeed(0);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    System.out.println(intakeJoint.getPos());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

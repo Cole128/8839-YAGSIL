@@ -24,7 +24,7 @@ public class SpinShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.spinFeedandFlywheel(1, 0.8, 0.7);
+    shooterSubsystem.spinFeedandFlywheel(1, 1, 0.7);
   }
 
   // Called once the command ends or is interrupted.

@@ -88,8 +88,8 @@ public final class Constants {
     public static final double kMaxOutput = 0.7;
     public static final double kMinOutput = -0.7;
 
-    public static final double kUpperLimit = 0.3;
-    public static final double kLowerLimit = 0.01;
+    public static final double kUpperLimit = 1.0;
+    public static final double kLowerLimit = 0.0;
 
   }
 }

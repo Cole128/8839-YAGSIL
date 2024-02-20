@@ -5,17 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeJoint;
 
-public class SpinFlywheel extends Command {
-  private final ShooterSubsystem shooterSubsystem;
-
-
-  /** Creates a new SpinFlywheel. */
-  public SpinFlywheel(ShooterSubsystem outtake) {
+public class RetractIntake extends Command {
+  private IntakeJoint joint;
+  /** Creates a new RetractIntake. */
+  public RetractIntake(IntakeJoint subsystem) {
+    joint = subsystem;
+    addRequirements(joint);
     // Use addRequirements() here to declare subsystem dependencies.
-    shooterSubsystem = outtake;
-    addRequirements(outtake);
   }
 
   // Called when the command is initially scheduled.
@@ -25,18 +23,18 @@ public class SpinFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.spinFlywheel(1, 1);
+    joint.setSpeed(1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.spinFlywheel(0, 0);
+    joint.setSpeed(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return IntakeJoint.getEncoderDistance() <= 0;
   }
 }

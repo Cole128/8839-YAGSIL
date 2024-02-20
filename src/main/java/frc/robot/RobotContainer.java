@@ -17,11 +17,17 @@ import frc.robot.Constants.MotorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbExtend;
 import frc.robot.commands.ClimbRetract;
-import frc.robot.commands.SpinFeedWheel;
-import frc.robot.commands.SpinFlywheel;
+import frc.robot.commands.RetractIntake;
+
+// import frc.robot.commands.ExtendIntakeJoint;
+// import frc.robot.commands.HoldIntakeJoint;
+//import frc.robot.commands.JointTest;
+// import frc.robot.commands.RetractIntakeJoint;
+
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SpinShooter;
-import frc.robot.commands.getIntakePos;
+import frc.robot.commands.StopIntake;
+// import frc.robot.commands.getIntakePos;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeJoint;
@@ -61,16 +67,18 @@ public class RobotContainer {
 
     //Shooter
     public static SpinShooter spinShooter = new SpinShooter(shooterSubsystem);
-    public static SpinFlywheel spinFlywheel = new SpinFlywheel(shooterSubsystem);
-    public static SpinFeedWheel spinFeedWheel = new SpinFeedWheel(shooterSubsystem);
+
     
     //Intake
     public static SpinIntake spinIntake = new SpinIntake(intakeSubsystem);
-    public static getIntakePos getIntakePos = new getIntakePos(intakeJoint);
+    public static RetractIntake retractIntake = new RetractIntake(intakeJoint);
+ 
     
     //Climb
     public static ClimbExtend climbExtend = new ClimbExtend(elevatorSubsystem);
     public static ClimbRetract climbRetract = new ClimbRetract(elevatorSubsystem);
+
+    
     
             
 
@@ -138,6 +146,7 @@ public class RobotContainer {
         // drivebase.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive :
         // closedFieldAbsoluteDrive);
         drivebase.setDefaultCommand(m_chooser.getSelected());
+        //intakeJoint.setDefaultCommand(holdIntakeJoint);
     }
 
     /**
@@ -159,6 +168,10 @@ public class RobotContainer {
         spinShooterButton.whileTrue(spinShooter);
         extendElevatorButton.whileTrue(climbExtend);
         retractElevatorButton.whileTrue(climbRetract);
+        retractIntakeJoint.onTrue(new RetractIntake(intakeJoint)).onFalse(new StopIntake(intakeJoint));
+        
+        // extendIntakeJoint.onTrue(new ExtendIntakeJoint(Constants.JointConstants.kUpperLimit, intakeJoint));
+        // retractIntakeJoint.onTrue(new RetractIntakeJoint(Constants.JointConstants.kLowerLimit, intakeJoint));
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
         //driverController.button(2).onTrue(new InstantCommand(drivebase::zeroGyro));
