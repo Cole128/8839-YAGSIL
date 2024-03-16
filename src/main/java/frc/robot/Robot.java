@@ -6,12 +6,20 @@ package frc.robot;
 
 
 
+import java.io.File;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.MotorConstants;
-import frc.robot.subsystems.IntakeJoint;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,8 +29,13 @@ import frc.robot.subsystems.IntakeJoint;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  
   private RobotContainer m_robotContainer;
+  // public static final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  //           "swerve"));
+  // public static final Intake m_intake = new Intake();
+  // public static final Shooter m_shooter = new Shooter();
+  // public static final Elevator m_elevator = new Elevator();
 
   
 
@@ -35,6 +48,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    //camera.setResolution(640, 480);
+    // CameraServer.getVideo();
     SmartDashboard.putData(CommandScheduler.getInstance());
   }
 
@@ -92,7 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    System.out.println("Encoder distance: " + (IntakeJoint.getEncoderDistance() / 1.9375 * 360));
+    System.out.println("Encoder distance: " + Elevator.getEncoderDistance());
   }
 
   @Override

@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import swervelib.SwerveController;
 
 /**
@@ -19,8 +21,9 @@ public class TeleopDrive extends Command
 {
 
   private final SwerveSubsystem  swerve;
-  private final DoubleSupplier   vX;
-  private final DoubleSupplier   vY;
+  private final Supplier<Translation2d> movement;
+  // private final DoubleSupplier   vX;
+  // private final DoubleSupplier   vY;
   private final DoubleSupplier   omega;
   private final BooleanSupplier  driveMode;
   private final SwerveController controller;
@@ -30,12 +33,13 @@ public class TeleopDrive extends Command
    *
    * @param swerve The subsystem used by this command.
    */
-  public TeleopDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
+  public TeleopDrive(SwerveSubsystem swerve, Supplier<Translation2d> movement, DoubleSupplier omega,
                      BooleanSupplier driveMode)
   {
     this.swerve = swerve;
-    this.vX = vX;
-    this.vY = vY;
+    this.movement = movement;
+    // this.vX = vX;
+    // this.vY = vY;
     this.omega = omega;
     this.driveMode = driveMode;
     this.controller = swerve.getSwerveController();
@@ -53,8 +57,11 @@ public class TeleopDrive extends Command
   @Override
   public void execute()
   {
-    double xVelocity   = Math.pow(vX.getAsDouble(), 3);
-    double yVelocity   = Math.pow(vY.getAsDouble(), 3);
+    Translation2d moveXY = movement.get();
+    double vX = moveXY.getX();
+    double vY = moveXY.getY();
+    double xVelocity   = Math.pow(vX, 3);
+    double yVelocity   = Math.pow(vY, 3);
     double angVelocity = Math.pow(omega.getAsDouble(), 3);
     
     SmartDashboard.putNumber("vX", xVelocity);

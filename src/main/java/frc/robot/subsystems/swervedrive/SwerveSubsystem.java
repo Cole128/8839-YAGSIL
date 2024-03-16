@@ -40,7 +40,7 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Maximum speed of the robot in meters per second, used to limit acceleration.
      */
-    public double maximumSpeed = Units.feetToMeters(14.5);
+    public double maximumSpeed = Units.feetToMeters(4.5);
 
     /**
      * Initialize {@link SwerveDrive} with the directory provided.
@@ -93,13 +93,11 @@ public class SwerveSubsystem extends SubsystemBase {
                 this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                                  // Constants class
-                        new PIDConstants(5.0, 0.0, 0.0),
+                        new PIDConstants(0.0020645, 0.0, 0.0),
                         // Translation PID constants
-                        new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
-                                swerveDrive.swerveController.config.headingPIDF.i,
-                                swerveDrive.swerveController.config.headingPIDF.d),
+                        new PIDConstants(0.01, 0.0, 0.0),
                         // Rotation PID constants
-                        4.5,
+                        0.5,
                         // Max module speed, in m/s
                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                         // Drive base radius in meters. Distance from robot center to furthest module.
@@ -127,10 +125,10 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
         // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+        PathPlannerPath path = PathPlannerPath.fromPathFile("PathTest");
 
         if (setOdomToStart) {
-            resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+            resetOdometry(new Pose2d(path.getPoint(0).position, new Rotation2d(90)));
         }
 
         // Create a path following command using AutoBuilder. This will also trigger
@@ -220,8 +218,8 @@ public class SwerveSubsystem extends SubsystemBase {
             DoubleSupplier angularRotationX) {
         return run(() -> {
             // Make the robot move
-            swerveDrive.drive(new Translation2d(translationX.getAsDouble() * maximumSpeed, translationY.getAsDouble()),
-                    angularRotationX.getAsDouble() * swerveDrive.swerveController.config.maxAngularVelocity,
+            swerveDrive.drive(new Translation2d(translationX.getAsDouble() * maximumSpeed, translationY.getAsDouble() * maximumSpeed),
+                    angularRotationX.getAsDouble() * maximumSpeed,
                     true,
                     false);
         });

@@ -56,6 +56,7 @@ public final class Constants {
     public static final int MOTOR_INTAKE_ANGLE_ID = 14;
     public static final int MOTOR_ELEVATOR_LEFT_ID = 15;
     public static final int MOTOR_ELEVATOR_RIGHT_ID = 16;
+    public static final int MOTOR_SHOOTER_ANGLE_ID = 17;
     public static final int MOTOR_FLYWHEEL_LEFT_ID = 18;
     public static final int MOTOR_FLYWHEEL_RIGHT_ID = 19;
     public static final int MOTOR_FEEDER_ID = 20;
@@ -63,9 +64,9 @@ public final class Constants {
   }
 
   public static class Buttons {
-    public static final int RETRACT_INTAKE_JOINT_BUTTON_ID = 1;
-    public static final int EXTEND_INTAKE_JOINT_BUTTON_ID = 2;
-    public static final int INTAKE_BUTTON_ID = 3;
+    public static final int RETRACT_INTAKE_JOINT_BUTTON_ID = 2;
+    public static final int EXTEND_INTAKE_JOINT_BUTTON_ID = 1;
+    public static final int SHOOTERJOINT_BUTTON_ID = 3;
     public static final int SHOOTER_BUTTON_ID = 4;
     public static final int ELEVATOR_EXTEND_BUTTON_ID = 5;
     public static final int ELEVATOR_RETRACT_BUTTON_ID = 6;

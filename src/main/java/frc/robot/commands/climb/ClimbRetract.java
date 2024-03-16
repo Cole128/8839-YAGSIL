@@ -2,15 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.Elevator;
 
 public class ClimbRetract extends Command {
-  private final ElevatorSubsystem elevatorSubsystem;
+  private final Elevator elevatorSubsystem;
   /** Creates a new ClimbRetract. */
-  public ClimbRetract(ElevatorSubsystem climb) {
+  public ClimbRetract(Elevator climb) {
     elevatorSubsystem = climb;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climb);
