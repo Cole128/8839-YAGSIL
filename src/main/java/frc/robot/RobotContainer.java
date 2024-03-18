@@ -176,6 +176,7 @@ public class RobotContainer {
 
         SmartDashboard.putData(m_chooser);
 
+
                 
 
         // drivebase.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive :
@@ -193,6 +194,8 @@ public class RobotContainer {
         autoChooser.addOption("Taxi", new PathPlannerAuto("Taxi"));
 
         autoChooser.setDefaultOption("BlueAuto", new PathPlannerAuto("FollowPath"));
+
+        SmartDashboard.putData(autoChooser);
         
        
        
